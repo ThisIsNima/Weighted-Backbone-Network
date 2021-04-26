@@ -10,7 +10,7 @@ end
   
 %%%%%%%%%%%% create the dynamic network connectivity with given temporal window size
 
-Dynamic_C_Adjacencies=ST_Preparation(w_t);
+Dynamic_Adjacencies=ST_Preparation(w_t);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%START
 
@@ -22,21 +22,22 @@ for N=1:length(files)
 
 clear arrz
 clear arrz1
-
-for i=1:length(Dynamic_C_Adjacencies{1, 1}{1, 1}) %number of voxels of the region
-for j=1:length(Dynamic_C_Adjacencies{1, 1}{1, 1})
+num_voxels=length(Dynamic_Adjacencies{1, 1}{1, 1});%number of voxels of the region
+tau=length(Dynamic_Adjacencies{1, 1}); %number of temporal segments
+for i=1:num_voxels
+for j=1:num_voxels
 
 if i~=j
 
-for t=1:length(Dynamic_C_Adjacencies{1, 1}) %number of temporal segments
-arrz(t)=Adjacencies_Healthy_41_20_5{1, N}{t, 1}(i,j);
+for t=1:tau 
+arrz(t)=Dynamic_Adjacencies{1, N}{t, 1}(i,j);
 end
 
 normA = arrz - min(arrz(:));
 arrz1 = normA ./ max(normA(:));
 
-for t=1:20
-Adjacencies_Healthy_41_normalized{1, N}{t, 1}(i,j)=arrz1(t);
+for t=1:tau
+Dynamic_Adjacencies_normalized{1, N}{t, 1}(i,j)=arrz1(t);
 end
 
 end
@@ -46,7 +47,7 @@ end
 end
 
 data=Adjacencies_Healthy_41_normalized{1, N};
-for i=1:64
+for i=1:length(Dynamic_C_Adjacencies{1, 1}{1, 1})
 for t=1:20
 data{t,1}(i,i)=0;
 end
